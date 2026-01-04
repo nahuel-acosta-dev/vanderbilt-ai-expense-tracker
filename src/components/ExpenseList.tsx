@@ -1,6 +1,6 @@
 "use client";
 
-import { Expense, Category } from "@/types";
+import { Expense } from "@/types";
 import { formatDate, formatCurrency, getCategoryColor } from "@/lib/utils";
 import { useState } from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Expense, FilterOptions } from "@/types";
 import {
   ExpenseForm,
@@ -9,6 +9,7 @@ import {
   SummaryCards,
   SpendingChart,
   LoadingSpinner,
+  CloudExportHub,
 } from "@/components";
 import { calculateExpenseSummary, exportToCSV } from "@/lib/utils";
 import { useExpenses } from "@/hooks/useExpenses";
@@ -23,6 +24,7 @@ export default function Home() {
     searchTerm: "",
   });
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [isCloudExportOpen, setIsCloudExportOpen] = useState(false);
 
   // Filter expenses based on criteria
   const filteredExpenses = useMemo(() => {
@@ -109,13 +111,22 @@ export default function Home() {
               </p>
             </div>
             {expenses.length > 0 && (
-              <button
-                onClick={() => exportToCSV(filteredExpenses)}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2"
-              >
-                <span>📥</span>
-                Export to CSV
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsCloudExportOpen(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2"
+                >
+                  <span>☁️</span>
+                  Cloud Export (V3)
+                </button>
+                <button
+                  onClick={() => exportToCSV(filteredExpenses)}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2"
+                >
+                  <span>📥</span>
+                  Export to CSV
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -189,6 +200,14 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Cloud Export Hub V3 Modal */}
+      {isCloudExportOpen && (
+        <CloudExportHub
+          expenses={filteredExpenses}
+          onClose={() => setIsCloudExportOpen(false)}
+        />
+      )}
     </main>
   );
 }
